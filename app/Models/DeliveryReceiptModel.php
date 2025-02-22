@@ -207,17 +207,12 @@ class DeliveryReceiptModel extends Model
             $this->db->transStart(); // Start Transaction
 
             $query = "UPDATE delivery_receipt SET 
-                client_name = ?,
-                client_tin  = ?,
                 client_term = ?,    
-                client_address = ?,
-                client_business_name = ?,
                 sub_total = ?,
                 freight_cost = ?,
                 total_amount = ?,
                 dr_status  = ?,
                 updater_id = ?,
-                archive = ?,
                 dr_date = ?,
                 updated_at = CURRENT_TIMESTAMP
                 WHERE id = ? AND archive = 0";
@@ -247,11 +242,10 @@ class DeliveryReceiptModel extends Model
         try {
             $this->db->transStart(); // Start Transaction
 
-            $query = "UPDATE delivery_receipt_items_list (
+            $query = "UPDATE delivery_receipt_items_list SET
                 dr_item_code = ?,
                 dr_item_price = ?,
                 dr_item_qty = ?,
-                archive = ?,
                 updater_id = ?,
                 updated_at = CURRENT_TIMESTAMP
                 WHERE id = ?";
@@ -333,7 +327,7 @@ class DeliveryReceiptModel extends Model
         try {
             $this->db->transStart(); // Start Transaction
 
-            $query = "UPDATE sales_invoice_items_list SET 
+            $query = "UPDATE delivery_receipt_items_list SET 
                 updater_id = ?,
                 archive = ?,
                 updated_at = CURRENT_TIMESTAMP

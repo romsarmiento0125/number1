@@ -168,7 +168,7 @@
                                             <div class="">
                                                 <div class="d-flex align-items-center mb-2">
                                                     <p>Sub&nbsp;total:&nbsp;</p>
-                                                    <p class="fw-bold" id="summary_total_amount"></p>
+                                                    <p class="fw-bold" id="summary_sub_total"></p>
                                                 </div>
                                                 <p>Discount:</p>
                                                 <div class="" id="discount_summary">
@@ -181,7 +181,7 @@
                                             <div class="">
                                                 <div class="d-flex align-items-center mb-2">
                                                     <p>TOTAL&nbsp;AMOUNT:&nbsp;</p>
-                                                    <p class="fw-bold" id="summary_total_amount_due"></p>
+                                                    <p class="fw-bold" id="summary_total_amount"></p>
                                                 </div>
                                             </div>
                                         </div>

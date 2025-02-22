@@ -211,12 +211,13 @@ class SalesInvoice extends BaseController
                     ];
                     $result = $this->salesInvoiceModel->update_sales_invoice_items($params);
 
-                    if (isset($item['item_discount'])) {
-                        $si_item_id = $item['id'];
-                        $this->salesInvoiceModel->update_sales_invoice_items_discounts($item['item_discount'], $si_item_id, $user_id);
+                    if($result === 'success') {
+                        if (isset($item['item_discount'])) {
+                            $si_item_id = $item['id'];
+                            $this->salesInvoiceModel->update_sales_invoice_items_discounts($item['item_discount'], $si_item_id, $user_id);
+                        }
                     }
                 }
-
             }
 
             if (!empty($archives)) {

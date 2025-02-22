@@ -330,8 +330,8 @@ function compute_totals() {
         sum_disc = sum_disc + (table_total_discount(item.item_discount) * parseInt(item.item_qty));
         show_discount_summary(item.item_discount, parseInt(item.item_qty));
     });
-    $('#summary_total_amount').text(formatPrice(roundToTwoDecimals(sum_tot_amnt))).attr('data-total-amount', roundToTwoDecimals(sum_tot_amnt));
-    $('#summary_total_amount_due').text(formatPrice(roundToTwoDecimals(sum_tot_amnt - sum_disc))).attr('data-total-amount-due', roundToTwoDecimals(sum_tot_amnt - sum_disc));
+    $('#summary_sub_total').text(formatPrice(roundToTwoDecimals(sum_tot_amnt))).attr('data-sub-total', roundToTwoDecimals(sum_tot_amnt));
+    $('#summary_total_amount').text(formatPrice(roundToTwoDecimals(sum_tot_amnt - sum_disc))).attr('data-total-amount', roundToTwoDecimals(sum_tot_amnt - sum_disc));
 }
 
 function add_discount_input() {
@@ -418,8 +418,8 @@ function clearTableAndSummary() {
     to_archive_items = [];
     item_list_table();
     $('#item_freight_details').val('0');
+    $('#summary_sub_total').text('').attr('data-sub-total', '');
     $('#summary_total_amount').text('').attr('data-total-amount', '');
-    $('#summary_total_amount_due').text('').attr('data-total-amount-due', '');
     $('#discount_summary').empty();
     // Clear customer details
     $('#clients_details').val('').change();
@@ -435,8 +435,8 @@ function save_delivery_receipt(type) {
     let prompt = type === "printed" ? "print" : "draft";
     showUniversalModal("Confirm Action", "Are you sure you want to " + prompt + " this item?", function () {
         var summaryData = {
-            subTotal: $('#summary_total_amount').attr('data-total-amount'),
-            totalAmount: $('#summary_total_amount_due').attr('data-total-amount-due'),
+            subTotal: $('#summary_sub_total').attr('data-sub-total'),
+            totalAmount: $('#summary_total_amount').attr('data-total-amount'),
             freightCost: $('#item_freight_details').val(),
             dr_status: type
         };
@@ -667,8 +667,8 @@ function populateReceiptModule(data) {
 
 function update_delivery_receipt(type) {
     var summaryData = {
+        subTotal: $('#summary_sub_total').attr('data-sub-total'),
         totalAmount: $('#summary_total_amount').attr('data-total-amount'),
-        totalAmountDue: $('#summary_total_amount_due').attr('data-total-amount-due'),
         freightCost: $('#item_freight_details').val(),
         dr_status: type
     };
@@ -698,6 +698,7 @@ function update_delivery_receipt(type) {
         return;
     }
 
+    console.log(receiptData);
 
     $.ajax({
         url: base_url + '/delivery_receipt/update_draft',
@@ -705,6 +706,8 @@ function update_delivery_receipt(type) {
         contentType: 'application/json',
         data: JSON.stringify(receiptData),
         success: function (response) {
+            var data = JSON.parse(response);
+            console.log(data);
             alert('Draft updated successfully');
             clearTableAndSummary();
             get_products_clients_dr();

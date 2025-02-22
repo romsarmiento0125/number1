@@ -122,14 +122,10 @@ class DeliveryReceiptController extends BaseController
 
         // Extract summary data
         $summaryData = $data['summary'];
+        $subTotal = $summaryData['subTotal'];
         $totalAmount = $summaryData['totalAmount'];
-        $vatableSales = $summaryData['vatableSales'];
-        $vatAmount = $summaryData['vatAmount'];
-        $totalAmountDue = $summaryData['totalAmountDue'];
-        $vatExemptSales = $summaryData['vatExemptSales'];
-        $zeroRated = $summaryData['zeroRated'];
         $freightCost = $summaryData['freightCost'];
-        $si_status = $summaryData['si_status'];
+        $dr_status = $summaryData['dr_status'];
 
         // Extract customer data
         $customerDetail = $data['customer'];
@@ -144,43 +140,34 @@ class DeliveryReceiptController extends BaseController
 
         $params = [
             $customerTerms,
-            $vatableSales,
-            $vatExemptSales,
-            $zeroRated,
-            $vatAmount,
-            $totalAmountDue,
+            $subTotal,
             $freightCost,
             $totalAmount,
-            $si_status,
+            $dr_status,
             $user_id,
             $customerDate,
-            $data['si_id'] // Add the sales invoice ID for updating
+            $data['dr_id'] // Add the sales invoice ID for updating
         ];
 
-        
-
-        $updateResult = $this->deliveryReceiptModel->update_sales_invoice($params);
+        $updateResult = $this->deliveryReceiptModel->update_delivery_receipt($params);
         
         if ($updateResult === 'success') {
             foreach ($items as $item) { 
                 if($item['id'] === 0) {
                     $params = [
-                        $data['si_id'],
+                        $data['dr_id'],
                         $item['item_code'],
                         $item['item_price'],
                         $item['item_qty'],
-                        $item['item_vat'],
-                        $item['item_vat_check'],
-                        $item['item_vatable_sales'],
                         $item['unique_id'],
                         $user_id,
                         $user_id
                     ];
-                    $lastItemResult = $this->deliveryReceiptModel->insert_sales_invoice_items($params);
+                    $lastItemResult = $this->deliveryReceiptModel->insert_delivery_receipt_items($params);
     
                     if (isset($item['item_discount'])) {
-                        $si_item_id = $lastItemResult[0]->id; // Get the last inserted ID for the item
-                        $this->deliveryReceiptModel->insert_sales_invoice_items_discounts($item['item_discount'], $si_item_id, $user_id);
+                        $dr_item_id = $lastItemResult[0]->id; // Get the last inserted ID for the item
+                        $this->deliveryReceiptModel->insert_delivery_receipt_items_discounts($item['item_discount'], $dr_item_id, $user_id);
                     }
                 }
                 else {
@@ -188,20 +175,18 @@ class DeliveryReceiptController extends BaseController
                         $item['item_code'],
                         $item['item_price'],
                         $item['item_qty'],
-                        $item['item_vat'],
-                        $item['item_vat_check'],
-                        $item['item_vatable_sales'],
                         $user_id,
                         $item['id']
                     ];
-                    $result = $this->deliveryReceiptModel->update_sales_invoice_items($params);
+                    $result = $this->deliveryReceiptModel->update_delivery_receipt_items($params);
 
-                    if (isset($item['item_discount'])) {
-                        $si_item_id = $item['id'];
-                        $this->deliveryReceiptModel->update_sales_invoice_items_discounts($item['item_discount'], $si_item_id, $user_id);
+                    if($result === 'success') {
+                        if (isset($item['item_discount'])) {
+                            $dr_item_id = $item['id'];
+                            $this->deliveryReceiptModel->update_delivery_receipt_items_discounts($item['item_discount'], $dr_item_id, $user_id);
+                        }
                     }
                 }
-
             }
 
             if (!empty($archives)) {
@@ -211,11 +196,11 @@ class DeliveryReceiptController extends BaseController
                         1,
                         $archive['id'],
                     ];
-                    $this->deliveryReceiptModel->archive_sales_invoice_items($params);
+                    $archie_res = $this->deliveryReceiptModel->archive_delivery_receipt_items($params);
                 }
-               
             }
-            return json_encode(['status' => 'success']);
+
+            return json_encode(['status' => 'success', 'message' => $result]);
         } else {
             return json_encode(['status' => 'failed', 'message' => $updateResult]);
         }
