@@ -464,6 +464,15 @@ function save_delivery_receipt(type) {
         if (!customerDetail.date) missingFields.push('Customer Date');
         if (item_table_data.length === 0) missingFields.push('Items');
 
+        // New validation for discount labels
+        item_table_data.forEach(function (item) {
+            item.item_discount.forEach(function (discount) {
+                if (discount.discount && !discount.label) {
+                    missingFields.push('Discount Label for discount value ' + discount.discount);
+                }
+            });
+        });
+
         if (missingFields.length > 0) {
             alert('Invalid data. Please fill in the following fields: ' + missingFields.join(', '));
             return;
@@ -654,27 +663,6 @@ function populateReceiptModule(data) {
     });
     item_list_table();
     compute_totals();
-}
-
-function deepEqual(obj1, obj2) {
-    if (obj1 === obj2) return true;
-
-    if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
-        return false;
-    }
-
-    let keys1 = Object.keys(obj1);
-    let keys2 = Object.keys(obj2);
-
-    if (keys1.length !== keys2.length) return false;
-
-    for (let key of keys1) {
-        if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
-            return false;
-        }
-    }
-
-    return true;
 }
 
 function update_delivery_receipt(type) {

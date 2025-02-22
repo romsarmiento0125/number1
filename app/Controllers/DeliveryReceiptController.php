@@ -230,17 +230,16 @@ class DeliveryReceiptController extends BaseController
             return $this->response->setStatusCode(500)->setJSON(['error' => $result]);
         }
 
-        if (!empty($result) && $result[0]->si_status === 'printed') {
-            return $this->response->setStatusCode(400)->setJSON(['error' => 'Cannot edit a printed invoice.']);
+        if (!empty($result) && $result[0]->dr_status === 'printed') {
+            return $this->response->setStatusCode(400)->setJSON(['error' => 'Cannot edit a printed delivery receipt.']);
         }
-        
 
-        $salesInvoice = [];
+        $deliveryReceipt = [];
         $items = [];
 
         foreach ($result as $row) {
-            if (empty($salesInvoice)) {
-                $salesInvoice = [
+            if (empty($deliveryReceipt)) {
+                $deliveryReceipt = [
                     'id' => $row->id,
                     'client_id' => $row->client_id,
                     'client_name' => $row->client_name,
@@ -248,25 +247,22 @@ class DeliveryReceiptController extends BaseController
                     'client_term_name' => $row->client_term,
                     'client_address' => $row->client_address,
                     'client_business_name' => $row->client_business_name,
-                    'si_date' => $row->si_date,
-                    'si_status' => $row->si_status,
+                    'dr_date' => $row->dr_date,
+                    'dr_status' => $row->dr_status,
                     'freight_cost' => $row->freight_cost,
                     'items' => []
                 ];
             }
 
-            $itemId = $row->si_unique_id;
+            $itemId = $row->dr_unique_id;
             if (!isset($items[$itemId])) {
                 $items[$itemId] = [
-                    'si_item_id' => (int) $row->si_item_id,
+                    'dr_item_id' => (int) $row->dr_item_id,
                     'product_id' => $row->product_id,
-                    'si_item_code' => $row->si_item_code,
-                    'si_item_price' => $row->si_item_price,
-                    'si_item_qty' => $row->si_item_qty,
-                    'si_item_vat' => $row->si_item_vat,
-                    'si_item_vat_check' => $row->si_item_vat_check,
-                    'si_item_vatable_sales' => $row->si_item_vatable_sales,
-                    'si_unique_id' => (int) $row->si_unique_id,
+                    'dr_item_code' => $row->dr_item_code,
+                    'dr_item_price' => $row->dr_item_price,
+                    'dr_item_qty' => $row->dr_item_qty,
+                    'dr_unique_id' => (int) $row->dr_unique_id,
                     'discounts' => []
                 ];
             }
@@ -279,9 +275,9 @@ class DeliveryReceiptController extends BaseController
             }
         }
 
-        $salesInvoice['items'] = array_values($items);
+        $deliveryReceipt['items'] = array_values($items);
 
-        return json_encode($salesInvoice);
+        return json_encode($deliveryReceipt);
     }
 
     function print_si() {

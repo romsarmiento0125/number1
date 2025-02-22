@@ -362,32 +362,29 @@ class DeliveryReceiptModel extends Model
     {
         try {
             $query = "SELECT 
-                        si.id AS id,
-                        si.client_id AS client_id,
-                        si.client_name AS client_name,
-                        si.client_tin AS client_tin,
-                        si.client_term AS client_term,
-                        si.client_address AS client_address,
-                        si.client_business_name AS client_business_name,
-                        si.si_status AS si_status,
-                        si.freight_cost AS freight_cost,
+                        dr.id AS id,
+                        dr.client_id AS client_id,
+                        dr.client_name AS client_name,
+                        dr.client_tin AS client_tin,
+                        dr.client_term AS client_term,
+                        dr.client_address AS client_address,
+                        dr.client_business_name AS client_business_name,
+                        dr.dr_status AS dr_status,
+                        dr.freight_cost AS freight_cost,
                         p.id AS product_id,
-                        si_items.id AS si_item_id, 
-                        si_items.si_item_code, 
-                        si_items.si_item_price, 
-                        si_items.si_item_qty, 
-                        si_items.si_item_vat, 
-                        si_items.si_item_vat_check, 
-                        si_items.si_item_vatable_sales, 
-                        si_items.si_unique_id,
-                        si_items_discount.discount_label, 
-                        si_items_discount.discount,
-                        si.si_date
-                    FROM sales_invoice si
-                    LEFT JOIN sales_invoice_items_list si_items ON si.id = si_items.si_id
-                    LEFT JOIN sales_invoice_items_list_discount si_items_discount ON si_items.id = si_items_discount.si_item_id
-                    INNER JOIN products p ON si_items.si_item_code =  p.product_item
-                    WHERE si.id = ? AND si.archive = 0 AND si_items.archive = 0";
+                        dr_items.id AS dr_item_id,
+                        dr_items.dr_item_code,
+                        dr_items.dr_item_price,
+                        dr_items.dr_item_qty,
+                        dr_items.dr_unique_id,
+                        dr_items_discount.discount_label,
+                        dr_items_discount.discount,
+                        dr.dr_date
+                    FROM delivery_receipt dr
+                    LEFT JOIN delivery_receipt_items_list dr_items ON dr.id = dr_items.dr_id
+                    LEFT JOIN delivery_receipt_items_list_discount dr_items_discount ON dr_items.id = dr_items_discount.dr_item_id
+                    INNER JOIN products p ON dr_items.dr_item_code = p.product_item
+                    WHERE dr.id = ? AND dr.archive = 0 AND dr_items.archive = 0";
             return $this->db->query($query, [$id])->getResult();
         } catch (\Exception $e) {
             return $e->getMessage();
