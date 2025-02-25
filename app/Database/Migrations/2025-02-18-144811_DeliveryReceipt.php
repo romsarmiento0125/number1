@@ -60,9 +60,6 @@ class DeliveryReceipt extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
             ],
-            'archive' => [
-                'type' => 'BOOLEAN',
-            ],
             'dr_date' => [
                 'type' => 'DATE',
                 'null' => false,

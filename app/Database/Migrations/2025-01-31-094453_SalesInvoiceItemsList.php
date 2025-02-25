@@ -50,9 +50,6 @@ class SalesInvoiceItemsList extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 255,
             ],
-            'archive' => [
-                'type' => 'BOOLEAN',
-            ],
             'created_at timestamp default current_timestamp',
             'updated_at timestamp default current_timestamp on update current_timestamp'
         ];

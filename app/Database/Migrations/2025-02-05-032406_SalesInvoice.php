@@ -72,9 +72,6 @@ class SalesInvoice extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
             ],
-            'archive' => [
-                'type' => 'BOOLEAN',
-            ],
             'si_date' => [
                 'type' => 'DATE',
                 'null' => false,

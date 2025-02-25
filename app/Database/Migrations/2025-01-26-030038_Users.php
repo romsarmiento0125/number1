@@ -31,6 +31,9 @@ class Users extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 100,
             ],
+            'archive' => [
+                'type' => 'BOOLEAN',
+            ],
             'creator_id' => [
                 'type' => 'INT',
                 'constraint' => 11,
